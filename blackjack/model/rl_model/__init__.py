@@ -7,5 +7,5 @@ from gym.envs.registration import register
 
 register(
 	id='Blackjack-v1',
-	entry_point='blackjack_project.model.rl_model.gym_env:BlackjackEnv',
+	entry_point='blackjack.model.rl_model.gym_env:BlackjackEnv',
 )

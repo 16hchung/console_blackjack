@@ -75,10 +75,10 @@ def optimize_model(policy_net, target_net, optimizer, memory, device):
 		device=device, 
 		dtype=torch.uint8
 	)
-	non_final_next_states = torch.cat(
+	non_final_next_states = torch.stack(
 		[s for s in batch.next_state if s is not None]
 	)
-	state_batch = torch.cat(batch.state)
+	state_batch = torch.stack(batch.state)
 	action_batch = torch.cat(batch.action)
 	reward_batch = torch.cat(batch.reward)
 
@@ -123,7 +123,7 @@ def train(num_episodes):
 			action = select_action(state, device, policy_net, env, steps_done)
 			next_state, reward, done, info = env.step(action.item())
 			reward = torch.tensor([reward], device=device).float()
-			next_state = torch.from_numpy([next_state]).float().to(device)
+			next_state = torch.from_numpy(next_state).float().to(device)
 			if done: next_state = None
 			steps_done += 1
 
