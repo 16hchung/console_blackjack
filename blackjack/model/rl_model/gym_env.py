@@ -21,6 +21,7 @@ class BlackjackEnv(gym.Env):
 			high=state_space_upper_bounds,
 			dtype=np.float32
 		)
+		self.info_keys = ['money']
 		#self.observation_space = spaces.Tuple((
 		#	# num aces per deck in shoe
 		#	spaces.Discrete(max_cards_per_deck),
@@ -70,7 +71,7 @@ class BlackjackEnv(gym.Env):
 
 	def reset(self):
 		self.player = RLPlayer(max_decks)
-		self.game = Blackjack([self.player], n_decks=max_decks, min_shoe_size=10, rand_state=self.np_random)
+		self.game = Blackjack([self.player], n_decks=max_decks, min_shoe_size=20, rand_state=self.np_random)
 		state = self._new_hand()
 		return np.array(state)
 

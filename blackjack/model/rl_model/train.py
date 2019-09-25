@@ -1,6 +1,7 @@
 import gym
 import math
 import random
+import pandas as pd
 from itertools import count
 from collections import namedtuple
 
@@ -41,15 +42,30 @@ class ReplayMemory:
 		return len(self.memory)
 
 class TrainLogger:
-	def __init__(self):
-		self.all_info = {}
-		self.avgd_info = {}
-		self.iters = 0
+	def __init__(self, info_keys, log_freq=100):
+		self.all_info = pd.DataFrame(columns=info_keys  + ['iter'])
+		self.avgd_info = pd.DataFrame(columns=info_keys + ['iter'])
+		self.iter = 0
+		self.log_freq = log_freq
 
 	def log(self, info):
-		self.iters += 1
+		if self.iter % self.log_freq == 0:
+			info['iter'] = self.iter
+			self.all_info = self.all_info.append(info, ignore_index=True)
+			print(info)
+		self.iter += 1
+		# add new row to all_info
+		# only take last <= 100 (index from max(len-100, 0) to current index)
+		# take average
+		# add to avgd_info
+		pass
+
+	def plot(self, col_names):
+		pass
 
 	def finish(self, fname):
+		self.all_info.to_csv('all_'+fname)
+		#self.avgd_info.to_csv('avg_')
 		pass
 
 def select_action(state, device, policy_net, env, steps_done):
@@ -59,13 +75,13 @@ def select_action(state, device, policy_net, env, steps_done):
 		math.exp(-1. * steps_done / EPS_DECAY)
 	if sample > eps_threshold:
 		with torch.no_grad():
-			return policy_net(state).max(0)[1].view(1, 1)
+			return policy_net(state).max(0)[1].view(1, 1), False
 	else:
-		return torch.tensor([[random.randrange(n_actions)]], device=device, dtype=torch.long)
+		return torch.tensor([[random.randrange(n_actions)]], device=device, dtype=torch.long), True
 
 def optimize_model(policy_net, target_net, optimizer, memory, device):
 	if len(memory) < BATCH_SIZE:
-		return
+		return None
 	transitions = memory.sample(BATCH_SIZE)
 	batch = Transition(*zip(*transitions))
 
@@ -74,7 +90,7 @@ def optimize_model(policy_net, target_net, optimizer, memory, device):
 		map(lambda s: s is not None, batch.next_state)),
 		device=device, 
 		dtype=torch.uint8
-	)
+	).bool()
 	non_final_next_states = torch.stack(
 		[s for s in batch.next_state if s is not None]
 	)
@@ -100,12 +116,14 @@ def optimize_model(policy_net, target_net, optimizer, memory, device):
 	for param in policy_net.parameters():
 		param.grad.data.clamp_(-1, 1)
 	optimizer.step()
+	return loss.item()
 
 def train(num_episodes):
 	env = gym.make('Blackjack-v1')
 	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 	policy_net = DQN().to(device).float()
+	policy_net.train()
 	target_net = DQN().to(device).float()
 
 	target_net.load_state_dict(policy_net.state_dict())
@@ -114,14 +132,24 @@ def train(num_episodes):
 	optimizer = optim.RMSprop(policy_net.parameters())
 	memory = ReplayMemory(10000)
 
+	info_keys = env.info_keys + ['reward', 'action']
+	logger = TrainLogger(info_keys)
+
 	steps_done = 0
 	for i_episode in range(num_episodes):
 		# Init environment and state
 		state = torch.from_numpy(env.reset()).float().to(device)
 		for t in count():
 			# Select and perform action
-			action = select_action(state, device, policy_net, env, steps_done)
+			action, was_rand = select_action(state, device, policy_net, env, steps_done)
 			next_state, reward, done, info = env.step(action.item())
+			# Log info for plotting
+			more_info = {
+				'action': action.item(),
+				'reward': reward,
+				'rand_action': was_rand
+			}
+			# Turn output to tensors
 			reward = torch.tensor([reward], device=device).float()
 			next_state = torch.from_numpy(next_state).float().to(device)
 			if done: next_state = None
@@ -133,20 +161,28 @@ def train(num_episodes):
 			# Move to next state
 			state = next_state
 
-			optimize_model(policy_net, target_net, optimizer, memory, device)
+			loss = optimize_model(policy_net, target_net, optimizer, memory, device)
+			more_info['loss'] = loss
+			info.update(more_info)
+			logger.log(info)
 			if done:
 				break
 		# Update target network
 		if i_episode % TARGET_UPDATE == 0:
 			target_net.load_state_dict(policy_net.state_dict())
+	logger.finish('train_log.csv')
 
 if __name__=='__main__':
 	import argparse
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--n_eps', type=int, default=50)
+	parser.add_argument('--n_eps', type=int, default=10000000)
 	args = parser.parse_args()
 
+	import time
+	start = time.time()
 	train(args.n_eps)
+	print('finished in {} minutes'.format((time.time() - start) / 60))
+	# TODO: save parameters
 
 
 
