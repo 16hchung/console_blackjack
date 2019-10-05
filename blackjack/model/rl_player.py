@@ -4,7 +4,7 @@ from .cards import Card, Rank, Suit
 
 class RLPlayer(Player):
 	def __init__(self, n_decks, *kargs, **kwargs):
-		super().__init__(*kargs, **kwargs)
+		super().__init__(*kargs, name='Me (the computer)', **kwargs)
 
 		n_suits = len(Suit)
 		n_ranks = len(Rank)
