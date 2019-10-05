@@ -25,16 +25,9 @@ class ConsoleHelper:
 		[_,_,t,l] = coords
 		window.border()
 		if header != None:
-			window.addstr(1, 1, header)
+			window.addstr(0, 2, header)
 		window.refresh()
 		return window
-
-	def clear_window(self, window):
-		window.clear()
-		window.refresh()
-
-	def get_string(self):
-		return ''
 
 	def coords_for_position(self, pos):
 		scale_t, scale_b, scale_l, scale_r = WinProportions[pos].copy()
@@ -43,4 +36,36 @@ class ConsoleHelper:
 		b = int(self.n_rows * scale_b)
 		r = int(self.n_cols * scale_r)
 		return (b-t, r-l, t, l)
+
+	@classmethod
+	def safe_trim_rect(cls, window, t, b, l, r):
+		t = max(t,1)
+		b = min(b,window.getmaxyx()[0]-1)
+		l = max(l,1)
+		r = min(r,window.getmaxyx()[1]-1)
+		return t, b, l, r
+
+	@classmethod
+	def clear_window_rect(cls, window, t, b, l, r):
+		t, b, l, r = cls.safe_trim_rect(window, t, b, l, r)
+		for y in range(t, b):
+			for x in range(l, r):
+				self.window.delch(y,x)
+		window.refresh()
+
+	@classmethod
+	def print_str(cls, window, text, t=1, l=1):
+		lines = text.splitlines()
+		w = max(len(line) for line in lines)
+		h = len(lines)
+		t, b, l, r = cls.safe_trim_rect(window, t, t+h, l, l+w)
+		# print each line (no newlines, bc don't want to overwrite characters to the right)
+		for i in range(b-t):
+			line = lines[i]
+			window.addnstr(t, l, line, r-l)
+			t += 1
+		window.refresh()
+
+	def get_string(self):
+		return ''
 

@@ -22,14 +22,19 @@ def show_intro():
 	)
 	player_money = int(input_with_condition(
 		'How much money are you starting with? (please input a multiple of 10)',
-		'Money must be an integer and multiple of 10',
-		lambda s: s.isdigit() and int(s) % 10 == 0
+		'Money must be an integer multiple of 10, less than 10^10',
+		lambda s: s.isdigit() and int(s) % 10 == 0 and int(s) < 10e10
 	))
 	n_decks = int(input_with_condition(
 		'How many decks should be in the shoe?',
 		'Number of decks must be <= {} and >= {}'.format(max_decks, min_decks),
 		lambda s: s.isdigit() and min_decks <= int(s) <= max_decks
 	))
+	input_with_condition(
+		'Is your window the appropriate size: INSERT ROWS COLS? (y/n)', #TODO
+		'Is your window the appropriate size: INSERT ROWS COLS? (y/n)', #TODO
+		lambda s: s == 'y',
+	)
 	return n_decks, player_name, player_money
 
 def init_models(n_decks, player_name, player_money):

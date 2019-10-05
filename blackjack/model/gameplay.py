@@ -102,12 +102,3 @@ class Blackjack:
 		reward = bet_ratio * (1 if player_won else -1)
 		return reward
 
-	def play_round(self):
-		# take player bets
-		# deal hands to each player
-		# dealer card
-		# take player actions
-		# get rest of dealer hand
-		# take or give out money
-		pass
-
