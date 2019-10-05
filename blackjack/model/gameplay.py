@@ -3,6 +3,7 @@ from .hand import Hand
 from .player import Action, Player
 
 max_decks = 8
+min_decks = 2
 max_players = 3
 
 class Blackjack:
@@ -11,9 +12,9 @@ class Blackjack:
 			raise ValueError(
 				'Number of players must be between 1 and {}'.format(max_players)
 			)
-		if n_decks > max_decks or n_decks < 2:
+		if n_decks > max_decks or n_decks < min_decks:
 			raise ValueError(
-				'Number of decks must be between 2 and {}'.format(max_decks)
+				'Number of decks must be between {} and {}'.format(min_decks,max_decks)
 			)
 		self.shoe = Shoe(n_decks, rand_state)
 		self.min_shoe_size = min_shoe_size

@@ -1,9 +1,13 @@
+import torch
+import numpy as np
+
+from .rl_model.decider import DQN
 from .player import Player, Action
 from .cards import Card, Rank, Suit
 #from .rl_model.decider import Decider
 
 class RLPlayer(Player):
-	def __init__(self, n_decks, *kargs, **kwargs):
+	def __init__(self, n_decks, *kargs, model_file=None, **kwargs):
 		super().__init__(*kargs, name='Me (the computer)', **kwargs)
 
 		n_suits = len(Suit)
@@ -16,6 +20,13 @@ class RLPlayer(Player):
 		self.n_total_left = n_suits * n_decks * n_ranks
 
 		self.dealer_card = None
+
+		# init neural net
+		if model_file:
+			self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+			self.policy_net = DQN().to(self.device).float()
+			self.policy_net.load_state_dict(torch.load(model_file))
+			self.policy_net.eval()
 
 	@property
 	def current_state(self):
@@ -35,6 +46,10 @@ class RLPlayer(Player):
 		)
 		return state
 
+	@property
+	def current_state_tensor(self):
+		return torch.from_numpy(np.array(self.current_state)).float().to(self.device)
+
 	def card_was_drawn(self, card):
 		if card.rank == Rank.A:
 			self.n_aces_left -= 1
@@ -52,5 +67,10 @@ class RLPlayer(Player):
 		self.dealer_card = card
 
 	def action(self):
-		return Action.Hit
+		if not model_file:
+			return Action.Hit
+		with torch.no_grad():
+			net_result = self.policy_net(self.current_state_tensor).max(0)[1].view(1,1).item()
+			return Action(1+net_result)
+
 		#self.decider
