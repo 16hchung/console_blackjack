@@ -17,12 +17,15 @@ class ConsoleHelper:
 		self.n_rows, self.n_cols = screen.getmaxyx()
 		self.win_positions = {pos:False for pos in WinPosition}
 
-	def new_window(self, pos):
+	def new_window(self, pos, header=None):
 		if self.win_positions[pos]:
 			return None
 		coords = self.coords_for_position(pos)
 		window = crs.newwin(*coords)
+		[_,_,t,l] = coords
 		window.border()
+		if header != None:
+			window.addstr(1, 1, header)
 		window.refresh()
 		return window
 
