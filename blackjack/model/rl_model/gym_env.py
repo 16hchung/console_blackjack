@@ -22,26 +22,6 @@ class BlackjackEnv(gym.Env):
 			dtype=np.float32
 		)
 		self.info_keys = ['money']
-		#self.observation_space = spaces.Tuple((
-		#	# num aces per deck in shoe
-		#	spaces.Discrete(max_cards_per_deck),
-		#	# num 2/3/4 per deck in shoe
-		#	spaces.Discrete(max_cards_per_deck * 3), 
-		#	# num 5/6/7 per deck in shoe
-		#	spaces.Discrete(max_cards_per_deck * 3), 
-		#	# num 8/9   per deck in shoe
-		#	spaces.Discrete(max_cards_per_deck * 2),
-		#	# num 10-valued per deck in shoe
-		#	spaces.Discrete(max_cards_per_deck * 4),
-		#	# player hand value
-		#	spaces.Discrete(32),
-		#	# hand contains usable ace
-		#	spaces.Discrete(2),
-		#	# dealer's card value
-		#	spaces.Discrete(10),
-		#	# approx num decks left
-		#	spaces.Discrete(8)
-		#))
 		self.seed()
 		self.player = None
 		self.game   = None

@@ -8,12 +8,15 @@ class Player:
 		self.money = money
 		self.hand = None
 		self.is_turn_done = True
-		self._bet = 1
+		self.bet = 10
 
 	def card_was_drawn(self, card):
 		pass # must override in sub class
 
 	def dealer_card_set(self, card):
+		pass # must override in sub class
+
+	def shoe_shuffled(self):
 		pass # must override in sub class
 
 	def action(self):
@@ -24,7 +27,7 @@ class Player:
 
 	def settle_bet(self, did_win, bet_ratio=1):
 		self.is_turn_done = True
-		amt = int(bet_ratio * self._bet)
+		amt = int(bet_ratio * self.bet)
 		if did_win == None:
 			pass # tied
 		elif did_win:
@@ -34,4 +37,4 @@ class Player:
 
 	def place_bet(self):
 		self.is_turn_done = False
-		return self._bet
+		return self.bet

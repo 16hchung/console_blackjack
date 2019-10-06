@@ -19,10 +19,10 @@ class Shoe:
 		self.ranks = n_decks * ranks
 		self.suits = n_decks * suits
 
-		rand_state = rand_state or np.random.RandomState()
-		self._shuffle_idcs = list(range(len(self.ranks)))
-		rand_state.shuffle(self._shuffle_idcs)
-		self._position = 0
+		self.rand_state = rand_state or np.random.RandomState()
+		self._shuffle_idcs = None
+		self._position = None
+		self.shuffle()
 
 	@property
 	def cards_left(self):
@@ -47,3 +47,8 @@ class Shoe:
 		suit = self.suits[idx]
 		self._position += 1
 		return Card(Rank(rank), Suit(suit))
+
+	def shuffle(self):
+		self._shuffle_idcs = list(range(len(self.ranks)))
+		self.rand_state.shuffle(self._shuffle_idcs)
+		self._position = 0

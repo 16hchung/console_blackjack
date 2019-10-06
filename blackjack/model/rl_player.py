@@ -10,23 +10,24 @@ class RLPlayer(Player):
 	def __init__(self, n_decks, *kargs, model_file=None, **kwargs):
 		super().__init__(*kargs, name='Me (the computer)', **kwargs)
 
-		n_suits = len(Suit)
-		n_ranks = len(Rank)
-		self.n_aces_left  = n_suits * n_decks
-		self.n_23or4_left = n_suits * n_decks * 3
-		self.n_56or7_left = n_suits * n_decks * 3
-		self.n_8or9_left  = n_suits * n_decks * 2
-		self.n_10val_left = n_suits * n_decks * 4
-		self.n_total_left = n_suits * n_decks * n_ranks
-
+		self.n_decks = n_decks
+		self.n_aces_left  = None 
+		self.n_23or4_left = None 
+		self.n_56or7_left = None 
+		self.n_8or9_left  = None 
+		self.n_10val_left = None 
+		self.n_total_left = None 
 		self.dealer_card = None
+		self.shoe_shuffled()
 
 		# init neural net
+		self.use_pretrained = False
 		if model_file:
 			self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 			self.policy_net = DQN().to(self.device).float()
 			self.policy_net.load_state_dict(torch.load(model_file))
 			self.policy_net.eval()
+			self.use_pretrained = True
 
 	@property
 	def current_state(self):
@@ -66,11 +67,22 @@ class RLPlayer(Player):
 	def dealer_card_set(self, card):
 		self.dealer_card = card
 
+	def shoe_shuffled(self):
+		n_suits = len(Suit)
+		n_ranks = len(Rank)
+		self.n_aces_left  = n_suits * self.n_decks
+		self.n_23or4_left = n_suits * self.n_decks * 3
+		self.n_56or7_left = n_suits * self.n_decks * 3
+		self.n_8or9_left  = n_suits * self.n_decks * 2
+		self.n_10val_left = n_suits * self.n_decks * 4
+		self.n_total_left = n_suits * self.n_decks * n_ranks
+
+		self.dealer_card = None
+
 	def action(self):
-		if not model_file:
+		if not self.use_pretrained:
 			return Action.Hit
 		with torch.no_grad():
 			net_result = self.policy_net(self.current_state_tensor).max(0)[1].view(1,1).item()
 			return Action(1+net_result)
 
-		#self.decider

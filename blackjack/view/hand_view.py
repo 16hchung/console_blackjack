@@ -4,7 +4,7 @@ from .card_templates import card_templates, rank_placeholder
 class HandView:
 	card_offset = 5
 
-	def __init__(self, window, cns_helper, min_l, min_t):
+	def __init__(self, window, cns_helper, min_t, min_l):
 		self.window = window
 		self.min_l = min_l
 		self.min_t = min_t

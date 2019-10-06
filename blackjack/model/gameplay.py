@@ -17,6 +17,7 @@ class Blackjack:
 				'Number of decks must be between {} and {}'.format(min_decks,max_decks)
 			)
 		self.shoe = Shoe(n_decks, rand_state)
+		self.n_decks = n_decks
 		self.min_shoe_size = min_shoe_size
 		self.players = players
 		self.dealer_hand = None
@@ -46,6 +47,7 @@ class Blackjack:
 			player.maxed_hand()
 
 	def handle_player_action(self, player, action):
+		''' handles player action and returns whether or not player's hand busted'''
 		if player.is_turn_done:
 			return False
 
@@ -57,9 +59,7 @@ class Blackjack:
 			elif player.hand.is_maxed:
 				player.maxed_hand()
 		elif action == Action.Stand:
-			pass
-		#elif action == Action.DoubleDown:
-		#	pass
+			player.is_turn_done = True
 		else:
 			pass
 		return False
@@ -85,12 +85,12 @@ class Blackjack:
 
 	def settle_bet_with_player(self, player):
 		if player.hand.is_bust:
-			return
+			return None
 
 		bet_ratio = 0
 		if self.dealer_hand.is_blackjack and player.hand.is_blackjack:
 			player_won = None
-		elif player.hand.is_blackjack:
+		elif player.hand.is_blackjack or self.dealer_hand.is_bust:
 			player_won = True
 			bet_ratio = 1.5
 		elif self.dealer_hand.value == player.hand.value:

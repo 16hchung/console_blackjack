@@ -50,7 +50,7 @@ class ConsoleHelper:
 		t, b, l, r = cls.safe_trim_rect(window, t, b, l, r)
 		for y in range(t, b):
 			for x in range(l, r):
-				self.window.delch(y,x)
+				window.addch(y,x,' ')
 		window.refresh()
 
 	@classmethod
@@ -65,7 +65,4 @@ class ConsoleHelper:
 			window.addnstr(t, l, line, r-l)
 			t += 1
 		window.refresh()
-
-	def get_string(self):
-		return ''
 

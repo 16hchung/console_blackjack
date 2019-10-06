@@ -38,7 +38,7 @@ def show_intro():
 	return n_decks, player_name, player_money
 
 def init_models(n_decks, player_name, player_money):
-	print('Please wait while I load my reinforcement learning-trained player...')
+	print('Please wait while I load my reinforcement-learning-trained player...')
 	human = Player(player_name, player_money)
 	rl_model = RLPlayer(n_decks, model_file='params_state_dict.pkl')
 	return human, rl_model
@@ -47,11 +47,12 @@ def start_game(screen, n_decks, human, rl_player):
 	# init curses-related objects and start gameplay
 	cns_helper = ConsoleHelper(screen)
 	blackjack_controller = BlackjackController(
-		cns_helper,
-		[rl_player, human],
+		cns_helper=cns_helper,
+		players=[rl_player, human],
 		n_decks=n_decks
 	)
 	blackjack_controller.start_gameplay_loop()
+	print('Thanks for playing!')
 
 def main():
 	user_prefs = show_intro()
