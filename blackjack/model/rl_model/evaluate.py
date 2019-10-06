@@ -31,7 +31,7 @@ def main():
 	args = parser.parse_args()
 
 	n_wins = loop_game_count_wins(args.params_fname, args.n_hands, args.baseline)
-	print('Won {0:} / {1:} hands: {2:.3f}%'.format(n_wins, args.n_hands, n_wins/args.n_hands))
+	print('Won {0:} / {1:} hands: {2:.3f}%'.format(n_wins, args.n_hands, n_wins/args.n_hands*100))
 
 if __name__=='__main__':
 	main()

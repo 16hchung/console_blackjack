@@ -140,7 +140,7 @@ class BlackjackController(Blackjack):
 			view.update_money_label(player.money)
 			self.print_msg_and_wait(
 				'{}\'s hand busted, losing ${} :('.format(
-					player.name, player.bet * self.bet_mult 
+					player.name, player.bet
 			))
 
 	def finish_dealer_hand(self):
@@ -181,9 +181,4 @@ class BlackjackController(Blackjack):
 			msg + ' Press {} to continue'.format(self.cont_descr),
 			lambda s: s == self.cont_key
 		)
-
-
-
-
-
 

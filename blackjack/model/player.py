@@ -1,6 +1,6 @@
 from enum import Enum
 
-Action = Enum('Action', 'Hit Stand')# DoubleDown')
+Action = Enum('Action', 'Hit Stand')
 
 class Player:
 	def __init__(self, name=None, money=100):

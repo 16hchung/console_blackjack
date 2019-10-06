@@ -4,7 +4,6 @@ import numpy as np
 from .rl_model.decider import DQN
 from .player import Player, Action
 from .cards import Card, Rank, Suit
-#from .rl_model.decider import Decider
 
 class RLPlayer(Player):
 	def __init__(self, n_decks, *kargs, model_file=None, **kwargs):

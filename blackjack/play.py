@@ -18,12 +18,12 @@ def show_intro():
 	player_name = input_with_condition(
 		'What is your name?',
 		'Name must be <= 20 characters',
-		lambda s: len(s) <= 20
+		lambda s: 0 < len(s) <= 20
 	)
 	player_money = int(input_with_condition(
 		'How much money are you starting with? (please input a multiple of 10)',
 		'Money must be an integer multiple of 10, less than 10^10',
-		lambda s: s.isdigit() and int(s) % 10 == 0 and int(s) < 10e10
+		lambda s: s.isdigit() and int(s) % 10 == 0 and 100 <= int(s) < 10e10
 	))
 	n_decks = int(input_with_condition(
 		'How many decks should be in the shoe?',
