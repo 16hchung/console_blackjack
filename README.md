@@ -22,7 +22,7 @@ $ python3 -m blackjack.play
 Note: I did some basic user-testing with my siblings and friends on MacOS Sierra 10.14 and Ubuntu 16.04. In case the program doesn't behave properly, please watch `demo.mov` to see how the game is played.
  
 ## Design Choices
-I'd never used reinforcement learning outside of a course problem set (which dealt with a discrete state space). As such, I wanted to try my hand at deep Q-learning. To mimic card counting strategies, I had my state space include not only the dealer card and properties of my hand, but also counts of low, medium, and high-valued cards normalized by shoe size.
+I'd never used reinforcement learning outside of a course problem set (which dealt with a discrete state space). As such, I wanted to try my hand at deep Q-learning. To mimic card counting strategies, I had my state space include not only the dealer card and properties of my hand, but also counts of low, medium, and high-valued cards normalized by shoe size. I used a simple Q-network with dropout so as to avoid overfitting, and trained using Adam optimization, which is better for cases with sparse rewards.
 
 In terms of architecture, I used a model-view-controller structure, placing any curses-related code in `view/`, any gameplay or data-heavy code in `model/`, and any orchestrating code in `controller/`. My reinforcement-learning-related files (including the Q-network, training, and evaluation) were kept in `model/rl_model/`.
 
