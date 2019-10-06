@@ -5,6 +5,8 @@ My baseline is a dummy player who chose whether to hit or run randomly. This pla
 
 My AI player after training had a win rate of ~43.2%.
 
+There is a gap between this rate and the winning odds of basic strategy. I suspect that that gap could be bridged by allowing more moves like doubling down or insurance betting.
+
 ## Usage
 #### Requirements
 Unix system, python3.6, anaconda, pip, pytorch 1.2, and cuda toolkit
