@@ -50,6 +50,7 @@ class BlackjackController(Blackjack):
 
 	def shuffle_shoe(self):
 		self.shoe.shuffle()
+		self.dealer_view.reset()
 		for player in self.players:
 			player.shoe_shuffled()
 		self.print_msg_and_wait('Shoe was getting small, so reshuffled.')
@@ -104,6 +105,11 @@ class BlackjackController(Blackjack):
 		super().start_dealer_hand()
 		card = self.dealer_hand.cards[0]
 		self.dealer_view.hand_card_added(card)
+
+	def _deal_card(self):
+		card = super()._deal_card()
+		self.dealer_view.card_dealt()
+		return card
 
 	def deal_player_hands(self):
 		for i, player in enumerate(self.players):

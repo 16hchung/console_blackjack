@@ -52,13 +52,13 @@ def start_game(screen, n_decks, human, rl_player):
 		n_decks=n_decks
 	)
 	blackjack_controller.start_gameplay_loop()
-	print('Thanks for playing!')
 
 def main():
 	user_prefs = show_intro()
 	human, rl_player = init_models(*user_prefs)
 	n_decks,_,_ = user_prefs
 	crs_wrapper(start_game, n_decks, human, rl_player)
+	print('Thanks for playing!')
 
 if __name__=='__main__':
 	main()

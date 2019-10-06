@@ -90,9 +90,12 @@ class Blackjack:
 		bet_ratio = 0
 		if self.dealer_hand.is_blackjack and player.hand.is_blackjack:
 			player_won = None
-		elif player.hand.is_blackjack or self.dealer_hand.is_bust:
+		elif player.hand.is_blackjack:
 			player_won = True
 			bet_ratio = 1.5
+		elif self.dealer_hand.is_bust:
+			player_won = True
+			bet_ratio = 1
 		elif self.dealer_hand.value == player.hand.value:
 			player_won = None
 		else:
