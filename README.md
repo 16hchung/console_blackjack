@@ -2,6 +2,7 @@
 I've implemented a TUI for playing blackjack (where possible actions are either hit or stand). I also used deep Q-learning to train  along with an AI player (trained using deep Q-learning)
 #### Results
 My baseline is a dummy player who chose whether to hit or run randomly. This player has a win rate of ~29.9%.
+
 My AI player after training had a win rate of ~43.2%.
 
 ## Usage
