@@ -12,7 +12,7 @@ from .decider import state_space_upper_bounds
 
 
 class BlackjackEnv(gym.Env):
-	def __init__(self):
+	def __init__(self, params_fname=None):
 		# hit, stand, double down (later add insurance, split, etc)
 		self.action_space = spaces.Discrete(len(Action))
 		lower_bounds = np.zeros((len(state_space_upper_bounds)))
@@ -22,6 +22,7 @@ class BlackjackEnv(gym.Env):
 			dtype=np.float32
 		)
 		self.info_keys = ['money']
+		self.params_fname = params_fname
 		self.seed()
 		self.player = None
 		self.game   = None
@@ -33,15 +34,14 @@ class BlackjackEnv(gym.Env):
 
 	def step(self, action):
 		done = False
-		action_e = Action(action+1) # python enum indexing starts at 1
-		busted = self.game.handle_player_action(self.player, action_e)
+		busted = self.game.handle_player_action(self.player, action)
 		# if hit and < 21
-		if action_e == Action.Hit and not busted \
+		if action == Action.Hit and not busted \
 					  and not self.player.hand.is_maxed: 
 			reward = 0
 			new_state = self.player.current_state
 		else: # this hand is done
-			if action_e == Action.Hit and busted:
+			if action == Action.Hit and busted:
 				reward = -1
 			else: # reached 21 or action was stand
 				self.game.finish_dealer_hand()
@@ -50,7 +50,8 @@ class BlackjackEnv(gym.Env):
 		return np.array(new_state), reward, self.game.done, {'money':self.player.money}
 
 	def reset(self):
-		self.player = RLPlayer(max_decks)
+		self.player = RLPlayer(max_decks, model_file=self.params_fname)
+		self.player.bet = 1
 		self.game = Blackjack([self.player], n_decks=max_decks, min_shoe_size=20, rand_state=self.np_random)
 		state = self._new_hand()
 		return np.array(state)

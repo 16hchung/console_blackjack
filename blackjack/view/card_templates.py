@@ -1,8 +1,6 @@
 from ..model.cards import Suit
 
 rank_placeholder = 'XX'
-card_height = 7
-card_width = 9
 card_templates = {
 	Suit.Hearts: 	' _______ \n' +  
 			'|XX     |\n' +  

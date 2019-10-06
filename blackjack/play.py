@@ -31,8 +31,8 @@ def show_intro():
 		lambda s: s.isdigit() and min_decks <= int(s) <= max_decks
 	))
 	input_with_condition(
-		'Is your window the appropriate size: INSERT ROWS COLS? (y/n)', #TODO
-		'Is your window the appropriate size: INSERT ROWS COLS? (y/n)', #TODO
+		'Is your window the appropriate size: >= 50 rows, >= 100 cols? (y/n)', 
+		'Is your window the appropriate size: >= 50 rows, >= 100 cols? (y/n)', 
 		lambda s: s == 'y',
 	)
 	return n_decks, player_name, player_money

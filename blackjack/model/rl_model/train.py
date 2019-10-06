@@ -10,6 +10,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from .decider import DQN
+from ..player import Action
 
 BURN_PERIOD = 50000
 BATCH_SIZE = 128*4
@@ -150,7 +151,8 @@ def train(num_episodes, out_params_file, log_file):
 			orig_state = state
 			while reward == 0 and not done:
 				action, was_rand = select_action(state, device, policy_net, env, steps_done)
-				step_outpt = env.step(action.item())
+				action_e = Action(action.item()+1)
+				step_outpt = env.step(action_e)
 				[next_state, reward, done, _] = step_outpt
 				step_outpts.append(step_outpt)
 				state = torch.from_numpy(next_state).float().to(device)
